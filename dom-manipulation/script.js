@@ -1,45 +1,39 @@
-// Array to store quotes with text and category
+// Initialize an array of quotes
 let quotes = [
-    { text: "The journey of a thousand miles begins with one step.", category: "Motivation" },
-    { text: "Life is what happens when you're busy making other plans.", category: "Life" },
-    { text: "In the middle of difficulty lies opportunity.", category: "Inspiration" }
+    { text: "The greatest glory in living lies not in never falling, but in rising every time we fall.", category: "Inspiration" },
+    { text: "The purpose of our lives is to be happy.", category: "Life" },
+    { text: "Life is what happens when you're busy making other plans.", category: "Life" }
   ];
   
   // Function to display a random quote
   function showRandomQuote() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
-    const randomQuote = quotes[randomIndex];
-  
-    // Display the selected quote in the 'quoteDisplay' div
-    document.getElementById('quoteDisplay').innerHTML = `
-      <p>"${randomQuote.text}"</p>
-      <p><em>Category: ${randomQuote.category}</em></p>
-    `;
+    const quoteDisplay = document.getElementById('quoteDisplay');
+    
+    // Show the random quote
+    quoteDisplay.innerHTML = `"${quotes[randomIndex].text}" - Category: ${quotes[randomIndex].category}`;
   }
+  
+  // Add event listener to the "Show New Quote" button
+  document.getElementById('newQuote').addEventListener('click', showRandomQuote);
   
   // Function to add a new quote
   function addQuote() {
     const newQuoteText = document.getElementById('newQuoteText').value;
     const newQuoteCategory = document.getElementById('newQuoteCategory').value;
   
-    // Validate input
-    if (newQuoteText && newQuoteCategory) {
-      // Add the new quote to the quotes array
+    // Ensure that both fields have values
+    if (newQuoteText !== "" && newQuoteCategory !== "") {
+      // Add the new quote to the array
       quotes.push({ text: newQuoteText, category: newQuoteCategory });
-  
-      // Clear the input fields
-      document.getElementById('newQuoteText').value = '';
-      document.getElementById('newQuoteCategory').value = '';
-  
-      alert("New quote added successfully!");
+      
+      // Clear input fields
+      document.getElementById('newQuoteText').value = "";
+      document.getElementById('newQuoteCategory').value = "";
+      
+      alert('New quote added successfully!');
     } else {
-      alert("Please enter both a quote and a category.");
+      alert('Please fill in both the quote text and the category.');
     }
   }
-  
-  // Event listener to display a new random quote when the button is clicked
-  document.getElementById('newQuote').addEventListener('click', showRandomQuote);
-  
-  // Initial display of a random quote when the page loads
-  window.onload = showRandomQuote;
   
