@@ -20,6 +20,22 @@ let quotes = [
     }
   }
   
+  // Fetch quotes from the server
+  function fetchQuotesFromServer() {
+    return fetch(serverUrl)
+      .then(response => response.json())
+      .then(serverQuotes => {
+        return serverQuotes.slice(0, 5).map(quote => ({
+          text: quote.title, // Simulate using the title as quote text
+          category: "Server" // Assign a default category
+        }));
+      })
+      .catch(error => {
+        console.error("Error fetching from server:", error);
+        return [];
+      });
+  }
+  
   // Show a random quote
   function showRandomQuote() {
     const quoteDisplay = document.getElementById('quoteDisplay');
@@ -73,33 +89,22 @@ let quotes = [
   }
   
   // Sync quotes with the server
-  function syncWithServer() {
-    // Simulating server data fetching
-    fetch(serverUrl)
-      .then(response => response.json())
-      .then(serverQuotes => {
-        // Here we should compare serverQuotes with local quotes
-        // For simulation, let's assume serverQuotes are new quotes
-        const newQuotes = serverQuotes.slice(0, 5).map(quote => ({
-          text: quote.title, // Simulate using the title as quote text
-          category: "Server" // Assign a default category
-        }));
+  async function syncWithServer() {
+    const serverQuotes = await fetchQuotesFromServer();
   
-        // Check for conflicts and merge quotes
-        newQuotes.forEach(serverQuote => {
-          const exists = quotes.some(localQuote => localQuote.text === serverQuote.text);
-          if (!exists) {
-            quotes.push(serverQuote); // Add new quotes from server
-          } else {
-            // Conflict resolution: Notify the user
-            alert(`Conflict detected for quote: "${serverQuote.text}". Keeping local version.`);
-          }
-        });
+    // Check for conflicts and merge quotes
+    serverQuotes.forEach(serverQuote => {
+      const exists = quotes.some(localQuote => localQuote.text === serverQuote.text);
+      if (!exists) {
+        quotes.push(serverQuote); // Add new quotes from server
+      } else {
+        // Conflict resolution: Notify the user
+        alert(`Conflict detected for quote: "${serverQuote.text}". Keeping local version.`);
+      }
+    });
   
-        saveQuotes(); // Save updated quotes to local storage
-        populateCategories(); // Update the category dropdown
-      })
-      .catch(error => console.error("Error fetching from server:", error));
+    saveQuotes(); // Save updated quotes to local storage
+    populateCategories(); // Update the category dropdown
   }
   
   // Export quotes as JSON file
@@ -123,7 +128,6 @@ let quotes = [
       populateCategories(); // Update category dropdown
       alert('Quotes imported successfully!');
     };
-    fileReader.readAsText(event.target.files[0]);
   }
   
   // Initialize the app on page load
